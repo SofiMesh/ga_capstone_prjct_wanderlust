@@ -33,7 +33,7 @@ class TripDetail(LoginRequiredMixin, DetailView):
     
 class TripCreate(LoginRequiredMixin, CreateView): 
     model = Trips
-    fields = ['name', 'startDate', 'endDate', 'budget', 'destination_ids']
+    fields = ['name', 'startDate', 'endDate', 'budget']
     # this is to associate the user with the trip
     def form_valid(self, form):
         # Assign the logged in user (self.request.user)
@@ -43,7 +43,7 @@ class TripCreate(LoginRequiredMixin, CreateView):
     
 class TripUpdate(LoginRequiredMixin, UpdateView): 
     model = Trips
-    fields = ['name', 'startDate', 'endDate', 'budget', 'destination_ids']
+    fields = ['name', 'startDate', 'endDate', 'budget']
 
 class TripDelete(LoginRequiredMixin, DeleteView): 
     model = Trips

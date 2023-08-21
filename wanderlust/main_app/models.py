@@ -26,7 +26,7 @@ class Trips(models.Model):
     startDate = models.DateField()
     endDate = models.DateField()
     budget = models.IntegerField()
-    destination_ids = models.ForeignKey(Destinations, on_delete=models.CASCADE)
+    destination_ids = models.ForeignKey(Destinations, on_delete=models.CASCADE, null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):

@@ -1,7 +1,25 @@
+
 {% extends 'base.html' %}
 
-
 {% block content %}
-    <h1> This is Trips Index </h1>
+    <h1>This is Trips Index</h1>
+
+    {% if object_list %}
+        <ul>
+            {% for trip in object_list %}
+                <li>
+                    <a href="{% url 'trips_detail' pk=trip.id %}">{{ trip.name }}</a>
+                    - Start Date: {{ trip.startDate }}
+                    - End Date: {{ trip.endDate }}
+                    - Budget: {{ trip.budget }}
+                    {% if trip.destination_ids %}
+                        - Destination: {{ trip.destination_ids.name }}
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No trips yet. <a href="{% url 'trip_create' %}">Create your first trip!</a></p>
+    {% endif %}
 
 {% endblock %}
