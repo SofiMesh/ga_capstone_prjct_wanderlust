@@ -25,7 +25,8 @@ def about(request):
 class TripIndex(LoginRequiredMixin, ListView): 
     model = Trips
     fields = '__all__'
-     
+
+
 class TripDetail(LoginRequiredMixin, DetailView): 
     model = Trips
     fields = '__all__'
