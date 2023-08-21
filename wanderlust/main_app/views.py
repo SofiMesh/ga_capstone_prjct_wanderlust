@@ -125,7 +125,7 @@ def add_photo(request, trip_id, destination_id):
 # View for routes: login, signup, logout
 def signup(request):
     error_message = ''
-      
+    
     if request.method == 'POST':
         # This is how to create a 'user' form object
         # that includes the data from the browser
@@ -148,3 +148,5 @@ def signup(request):
 
     
     
+
+
