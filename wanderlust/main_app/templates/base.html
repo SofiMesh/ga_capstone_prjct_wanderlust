@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wanderlust</title>
+</head>
+<body>
+    <header class="navbar-fixed">
+        <nav>
+            <ul>
+                <li><a href="{% url 'home' %}">Wanderlust</a></li>
+                <ul class="right">
+                    <li><a href="{% url 'login' %}">Log In</a></li>
+                    <li><a href="{% url 'signup' %}">Sign Up</a></li>
+                </ul>
+            </ul>
+        </nav>
+    </header>
+</body>
+</html>
