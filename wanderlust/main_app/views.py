@@ -96,11 +96,29 @@ def assoc_destination(request, trip_id, destination_id):
 
 # stubbing up functions for photo upload for now
 @login_required
-def add_trip_photo(request, trip_id):
-    return redirect('trips_detail', pk=trip_id)
-        
-@login_required
-def add_destination_photo(request, destination_id):
+def add_photo(request, trip_id, destination_id):
+    # pull the photo from the form
+    photo_file = request.FILES.get('photo-file', None)
+    if photo_file:
+        #initialize s3 connection
+        s3 = boto3.client('s3')
+        # generate a unique id for the photo
+        # photo_file.name[photo_file.name.rfind('.'):] is to get the file extension)
+        key = 'wanderlust/' + uuid.uuid4().hex[:6] + photo_file.name[photo_file.name.rfind('.'):]
+        try:
+            # access the bucket
+            bucket = os.environ['BUCKET_NAME']
+            # upload the photo to s3
+            s3.upload_fileobj(photo_file, bucket, key)
+            # build the url for the photo
+            url = f'{os.environ["S3_BASE_URL"]}{bucket}/{key}'
+            # create a photo in the db
+            Photos.objects.create(url=url, trip_id=trip_id, destination_id=destination_id)
+        # save url to the photo model + add fk for trip_id or destination_id
+        except Exception as err:
+            print(err)
+            print('An error occurred uploading file to S3')
+    
     return redirect('destinations_detail', pk=destination_id)
 
 
