@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .models import Trips, Destinations, Photos, Checklist, Travelers, Activities
-from .forms import ChecklistForm, ActivityForm
+from .forms import ChecklistForm, ActivityForm, SignupForm
 
 # import these for aws upload
 import uuid # this is to make random numbers
@@ -106,10 +106,11 @@ def add_destination_photo(request, destination_id):
 # View for routes: login, signup, logout
 def signup(request):
     error_message = ''
+      
     if request.method == 'POST':
         # This is how to create a 'user' form object
         # that includes the data from the browser
-        form = UserCreationForm(request.POST)
+        form = SignupForm(request.POST)
         if form.is_valid():
             # This will add the user to the database
             user = form.save()
@@ -118,8 +119,9 @@ def signup(request):
             return redirect('trips_index')
         else:
             error_message = 'Invalid sign up - try again'
+            
     # A bad POST or a GET request, so render signup.html with an empty form
-    form = UserCreationForm()
+    form = SignupForm()
     context = {'form': form, 'error_message': error_message}
     return render(request, 'registration/signup.html', context)
 
