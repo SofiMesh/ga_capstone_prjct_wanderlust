@@ -1,0 +1,19 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>This is Destinations Index</h1>
+
+    {% if object_list %}
+        <ul>
+            {% for destination in object_list %}
+                <li>
+                    <a href="{% url 'destinations_detail' pk=destination.id %}">{{ destination.name }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No destinations yet. <a href="{% url 'destinations_create' %}">Create your first destination!</a></p>
+    {% endif %}
+
+{% endblock %}

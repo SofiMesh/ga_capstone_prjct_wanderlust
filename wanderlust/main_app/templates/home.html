@@ -1,7 +1,13 @@
-{% extends 'base.html' %}
 
+{% extends 'base.html' %}
+{% load static %}
 {% block content %}
 
 <h1>Home</h1>
+<div style="display: flex; align-items:center ; justify-items: space-between;">
+  <img src="{% static 'assets/images/hero_img.png' %}" alt="Hero Image" style="margin-right: 50px;">
+  <h4>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum delectus quidem ipsam facilis necessitatibus vel similique, perspiciatis accusantium, adipisci qui est illo sunt, nesciunt velit ea asperiores dolor voluptatibus! Perferendis.</h4>
+</div>
+
 
 {% endblock %}
