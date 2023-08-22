@@ -35,7 +35,7 @@ class Trips(models.Model):
 class Checklist(models.Model):
     todos = models.CharField(max_length=250)
     complete = models.BooleanField()
-    trip_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    trip_id = models.ForeignKey(Trips, on_delete=models.CASCADE)
 
 class Travelers(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
