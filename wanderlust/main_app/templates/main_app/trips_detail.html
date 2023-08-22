@@ -8,9 +8,9 @@
   <div class="col s6 col-offset-3">
     <div class="card">
       <div class="card-content">
-        <span class="card-title">{{ trips.name }}</span>
-        <p>Start Date: {{ trips.startDate }}</p>
-        <p>End Date: {{ trips.endDate }}</p>
+        <span class="card-title">{{ object.name }}</span>
+        <p>Start Date: {{ object.startDate }}</p>
+        <p>End Date: {{ object.endDate }}</p>
       </div>
       <div class="card-action">
         <a href="">Edit</a>
@@ -18,6 +18,18 @@
       </div>
     </div>
   </div>
+    <div class="col s6">
+      <a href="{% url 'add_destinations' trips.id %}">Update Destinations</a>
+      {% if trips.destination_ids.count %}
+        {% for destination in trips.destination_ids.all %}
+          <div class="card">
+            <div class="card-content">
+              <span class="card-title">{{ destination.name }}</span>
+            </div>
+          </div>
+        {% endfor %}
+      {% endif %}
+    </div>
 </div>
 
 {% endblock %}

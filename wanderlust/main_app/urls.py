@@ -29,4 +29,7 @@ urlpatterns = [
   path('destinations/<int:pk>/delete/', views.DestinationDelete.as_view(), name='destinations_delete'),
   # url path for signup
   path('accounts/signup/', views.signup, name='signup'),
+  # testing
+  path('trips/<int:trip_id>/add_destinations/', views.assoc_destination, name='add_destinations'),
+
 ]

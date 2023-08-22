@@ -19,7 +19,7 @@
     <p>- End Date: {{ trip.endDate }}</p>
     <p>- Budget: {{ trip.budget }}</p>
 
-    {% if trip.destination_ids %} - Destination: {{ trip.destination_ids.name }}
+    {% if trip.destination_ids %} - Destination: {{ trips.destination_ids.all }}
     {% endif %}
   </li>
   {% endfor %}

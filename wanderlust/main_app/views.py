@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .models import Trips, Destinations, Photos, Checklist, Travelers, Activities
-from .forms import ChecklistForm, ActivityForm, SignupForm
+from .forms import ChecklistForm, ActivityForm, SignupForm, AddDestinationForm
 
 # import these for aws upload
 import uuid # this is to make random numbers
@@ -30,6 +30,11 @@ class TripIndex(LoginRequiredMixin, ListView):
 class TripDetail(LoginRequiredMixin, DetailView): 
     model = Trips
     fields = '__all__'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['destinations'] = Destinations.objects.all() # or any other query you want
+        return context
     
 class TripCreate(LoginRequiredMixin, CreateView): 
     model = Trips
@@ -89,10 +94,26 @@ def add_activity(request, destination_id):
         new_activity.save()
     return redirect('trips_detail', pk=destination_id)
 
+# @login_required
+# def assoc_destination(request, trip_id, destination_id):
+#     Trips.objects.get(id=trip_id).destination_ids.add(destination_id)
+#     return redirect('trips_detail', pk=trip_id)
+
 @login_required
-def assoc_destination(request, trip_id, destination_id):
-    Trips.objects.get(id=trip_id).destination_ids.add(destination_id)
-    return redirect('trips_detail', pk=trip_id)
+def assoc_destination(request, trip_id):
+    trip = Trips.objects.get(id=trip_id)
+    if request.method == 'POST':
+        print(request.POST)
+        print(trip_id)
+        form = AddDestinationForm(request.POST, instance=trip)
+        if form.is_valid():
+            form.save()
+            
+        return redirect('trips_detail', pk=trip_id)
+    else:
+        form = AddDestinationForm(instance=trip)
+    
+    return render(request, 'main_app/assoc_destinations.html', {'form': form, 'trip': trip})
 
 # stubbing up functions for photo upload for now
 @login_required
