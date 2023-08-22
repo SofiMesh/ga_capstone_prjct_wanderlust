@@ -18,7 +18,7 @@ urlpatterns = [
   # url path for add checklist, add activity, add photo, assoc destination
   path('trips/<int:trip_id>/add_checklist/', views.add_checklist, name='add_checklist'),
   path('trips/<int:trip_id>/add_activity/', views.add_activity, name='add_activity'),
-  path('trips/<int:trip_id>/add_photo/', views.add_photo, name='add_trip_photo'),
+  # path('trips/<int:trip_id>/add_photo/', views.add_photo, name='add_trip_photo'),
   path('destinations/<int:destination_id>/add_photo/', views.add_photo, name='add_destination_photo'),
   path('trips/<int:trip_id>/assoc_destination/<int:destination_id>/', views.assoc_destination, name='assoc_destination'),
   # url path for destinations CRUD

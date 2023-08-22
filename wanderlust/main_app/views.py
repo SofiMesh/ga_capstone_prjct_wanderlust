@@ -117,8 +117,9 @@ def assoc_destination(request, trip_id):
 
 # stubbing up functions for photo upload for now
 @login_required
-def add_photo(request, trip_id, destination_id):
+def add_photo(request, destination_id):
     # pull the photo from the form
+    destination = Destinations.objects.get(id=destination_id)
     photo_file = request.FILES.get('photo-file', None)
     if photo_file:
         #initialize s3 connection
@@ -133,15 +134,15 @@ def add_photo(request, trip_id, destination_id):
             s3.upload_fileobj(photo_file, bucket, key)
             # build the url for the photo
             url = f'{os.environ["S3_BASE_URL"]}{bucket}/{key}'
+            print(url)
             # create a photo in the db
-            Photos.objects.create(url=url, trip_id=trip_id, destination_id=destination_id)
+            Photos.objects.create(url=url, destination_id=destination)
         # save url to the photo model + add fk for trip_id or destination_id
         except Exception as err:
             print(err)
             print('An error occurred uploading file to S3')
     
     return redirect('destinations_detail', pk=destination_id)
-
 
 # View for routes: login, signup, logout
 def signup(request):
@@ -164,10 +165,4 @@ def signup(request):
     form = SignupForm()
     context = {'form': form, 'error_message': error_message}
     return render(request, 'registration/signup.html', context)
-
-
-
-    
-    
-
 

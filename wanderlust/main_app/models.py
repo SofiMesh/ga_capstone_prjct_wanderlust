@@ -48,6 +48,5 @@ class Activities(models.Model):
     trip_id = models.ForeignKey(Trips, on_delete=models.CASCADE)
 
 class Photos(models.Model):
-    photoUrl = models.CharField(max_length=200)
+    url = models.CharField(max_length=200)
     destination_id = models.ForeignKey(Destinations, on_delete=models.CASCADE)
-    trip_id = models.ForeignKey(Trips, on_delete=models.CASCADE)
