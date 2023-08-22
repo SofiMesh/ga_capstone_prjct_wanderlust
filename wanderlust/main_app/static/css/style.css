@@ -1,3 +1,14 @@
 body {
+
  color: black;
+}
+
+.about-section{
+background-color: lightcyan;
+font-size: 20px;
+}
+
+#addTripImg {
+    position: relative;
+    top: 205px;
 }
