@@ -18,7 +18,7 @@
       </div>
     </div>
   <!-- Insert photo markup below this comment -->
-  {% for photo in destinations_id.photo_set.all %}
+  {% for photo in destinations.photos_set.all %}
     <img class="responsive-img card-panel" src="{{photo.url}}">
   {% empty %}
     <div class="card-panel teal-text center-align">No Photos Uploaded</div>
