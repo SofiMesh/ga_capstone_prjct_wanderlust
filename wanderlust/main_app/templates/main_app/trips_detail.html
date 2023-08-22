@@ -13,7 +13,7 @@
         <p>End Date: {{ object.endDate }}</p>
       </div>
       <div class="card-action">
-        <a href="">Edit</a>
+        <a href="{% url 'trips_update' trips.id %}">Edit</a>
         <a href="{% url 'trips_delete' trips.id %}">Delete</a>
       </div>
     </div>
