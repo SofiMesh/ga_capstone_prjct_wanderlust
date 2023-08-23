@@ -15,6 +15,7 @@ class Destinations(models.Model):
 
     def get_absolute_url(self):
         return reverse('destinations_detail', kwargs={'pk': self.id})
+    
 class Trips(models.Model):
     name = models.CharField(max_length=250)
     startDate = models.DateField(null=True)
@@ -27,7 +28,7 @@ class Trips(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('trips_detail', kwargs={'pk': self.id})
+        return reverse('trips_detail', kwargs={'trip_id': self.id})
 
     class Meta: 
         ordering = ['-startDate']

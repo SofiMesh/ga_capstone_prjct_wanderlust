@@ -18,7 +18,29 @@
       </div>
     </div>
   </div>
-    <div class="col s6">
+
+  <div class="col s6">
+    <h3>Available Destinations</h3>
+    {% if destinations %}
+      {% for destination in destinations %}
+      <div class="card">
+        <div class="card-content">
+          <span class="card-title">{{ destination.name }}</span>
+        </div>
+        <div class="card-action">
+          <form action="{% url 'assoc_destination' trip_id=trips.id destination_id=destination.id %}" method="POST">
+            {% csrf_token %}
+            <button type="submit" class="btn">Add</button>
+          </form>
+        </div>
+      </div>
+      {% endfor %}
+    {% else %}
+      <h5>No Available Destinations</h5>
+    {% endif %}
+  </div>
+
+    <!-- <div class="col s6">
       <a href="{% url 'add_destinations' trips.id %}">Update Destinations</a>
       {% if trips.destination_ids.count %}
         {% for destination in trips.destination_ids.all %}
@@ -29,7 +51,7 @@
           </div>
         {% endfor %}
       {% endif %}
-    </div>
+    </div> -->
 </div>
 
 {% endblock %}

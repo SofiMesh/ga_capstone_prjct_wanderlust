@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView, DetailView
 from django.contrib.auth import login
@@ -100,20 +100,23 @@ def add_activity(request, destination_id):
 #     return redirect('trips_detail', pk=trip_id)
 
 @login_required
-def assoc_destination(request, trip_id):
-    trip = Trips.objects.get(id=trip_id)
-    if request.method == 'POST':
-        print(request.POST)
-        print(trip_id)
-        form = AddDestinationForm(request.POST, instance=trip)
-        if form.is_valid():
-            form.save()
+def assoc_destination(request, trip_id, destination_id):
+    trip = get_object_or_404(Trips, id=trip_id)
+    destination = get_object_or_404(Destinations, id=destination_id)
+    trip.destination_ids.add(destination)
+    return redirect('trips_detail', pk=trip_id)
+    # if request.method == 'POST':
+    #     print(request.POST)
+    #     print(trip_id)
+    #     form = AddDestinationForm(request.POST, instance=trip)
+    #     if form.is_valid():
+    #         form.save()
             
-        return redirect('trips_detail', pk=trip_id)
-    else:
-        form = AddDestinationForm(instance=trip)
+    #     return redirect('trips_detail', pk=trip_id)
+    # else:
+    #     form = AddDestinationForm(instance=trip)
     
-    return render(request, 'main_app/assoc_destinations.html', {'form': form, 'trip': trip})
+    # return render(request, 'main_app/assoc_destinations.html', {'form': form, 'trip': trip})
 
 # stubbing up functions for photo upload for now
 @login_required
