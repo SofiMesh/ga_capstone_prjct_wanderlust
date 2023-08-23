@@ -16,10 +16,11 @@ urlpatterns = [
   path('trips/<int:pk>/update/', views.TripUpdate.as_view(), name='trips_update'),
   path('trips/<int:pk>/delete/', views.TripDelete.as_view(), name='trips_delete'),
   # url path for add checklist, add activity, add photo, assoc destination
-  path('trips/<int:trip_id>/add_checklist/', views.add_checklist, name='add_checklist'),
+  path('add_checklist/<int:trip_id>/', views.add_checklist, name='add_checklist'),
   path('trips/<int:trip_id>/add_activity/', views.add_activity, name='add_activity'),
   # path('trips/<int:trip_id>/add_photo/', views.add_photo, name='add_trip_photo'),
   path('destinations/<int:destination_id>/add_photo/', views.add_photo, name='add_destination_photo'),
+  path('checklist/complete/<int:checklist_id>/', views.mark_complete, name='mark_complete'),
 
   # path('trips/<int:trip_id>/assoc_destination/<int:destination_id>/', views.assoc_destination, name='assoc_destination'),
 

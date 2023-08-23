@@ -61,6 +61,20 @@
     {% endif %}
   </div>
 
+
+  <form action="{% url 'add_checklist' trip_id=trips.id %}" method="POST">
+    {% csrf_token %}
+    <!-- Render the inputs -->
+    {{ checklist_form.as_p }}
+    <input type="submit" class="btn" value="Checklist">
+  </form>
+  <ul>
+    {% for checklist in checklists %}
+        <li>{{ checklist.todos }}: {% if checklist.complete %}Done{% else %}<a href="{% url 'mark_complete' checklist.id %}">Mark as complete</a>{% endif %}</li>
+
+    {% endfor %}
+</ul>
+
   <!-- <div class="col s6">
       <a href="{% url 'add_destinations' trips.id %}">Update Destinations</a>
       {% if trips.destination_ids.count %}
