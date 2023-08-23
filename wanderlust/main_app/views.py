@@ -33,8 +33,21 @@ class TripDetail(LoginRequiredMixin, DetailView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['destinations'] = Destinations.objects.all() # or any other query you want
+
+         # Get the trip object from the context
+        trip = context['object']
+        
+        # Get all destinations that are not associated with the trip
+        not_associated_destinations = Destinations.objects.exclude(id__in=trip.destination_ids.all())
+        
+        # Pass the not_associated_destinations queryset to the template context
+        context['not_associated_destinations'] = not_associated_destinations
+        
+        # Pass the associated destinations to the template context
+        context['associated_destinations'] = trip.destination_ids.all()
+        
         return context
+    
     
 class TripCreate(LoginRequiredMixin, CreateView): 
     model = Trips
@@ -117,6 +130,13 @@ def assoc_destination(request, trip_id, destination_id):
     #     form = AddDestinationForm(instance=trip)
     
     # return render(request, 'main_app/assoc_destinations.html', {'form': form, 'trip': trip})
+
+@login_required
+def unassoc_destination(request, trip_id, destination_id):
+    trip = get_object_or_404(Trips, id=trip_id)
+    destination = get_object_or_404(Destinations, id=destination_id)
+    trip.destination_ids.remove(destination)
+    return redirect('trips_detail', pk=trip_id)
 
 # stubbing up functions for photo upload for now
 @login_required

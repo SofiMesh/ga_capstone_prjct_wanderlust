@@ -28,6 +28,11 @@ urlpatterns = [
         views.assoc_destination,
         name='assoc_destination'
     ),
+  path(
+        'trips/<int:trip_id>/unassoc_destination/<int:destination_id>/',
+        views.unassoc_destination,
+        name='unassoc_destination'
+    ),
   
   # url path for destinations CRUD
   path('destinations/', views.DestinationIndex.as_view(), name='destinations_index'),

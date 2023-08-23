@@ -1,7 +1,4 @@
-{% extends 'base.html' %}
-
-
-{% block content %}
+{% extends 'base.html' %} {% block content %}
 
 <h1>This is a trip</h1>
 <div class="row">
@@ -20,27 +17,51 @@
   </div>
 
   <div class="col s6">
-    <h3>Available Destinations</h3>
-    {% if destinations %}
-      {% for destination in destinations %}
-      <div class="card">
-        <div class="card-content">
-          <span class="card-title">{{ destination.name }}</span>
-        </div>
-        <div class="card-action">
-          <form action="{% url 'assoc_destination' trip_id=trips.id destination_id=destination.id %}" method="POST">
-            {% csrf_token %}
-            <button type="submit" class="btn">Add</button>
-          </form>
-        </div>
+    <h3>{{ trips.name }}'s Destinations</h3>
+    {% if associated_destinations %} {% for destination in associated_destinations %}
+    <div class="card">
+      <div class="card-content">
+        <span class="card-title"> {{ destination.name }} </span>
       </div>
-      {% endfor %}
-    {% else %}
-      <h5>No Available Destinations</h5>
+      <div class="card-action">
+        <form
+          action="{% url 'unassoc_destination' trip_id=trips.id destination_id=destination.id %}"
+          method="POST"
+        >
+          {% csrf_token %}
+          <button type="submit" class="btn">Remove</button>
+        </form>
+      </div>
+    </div>
+    {% endfor %} {% else %}
+    <h5>Add your first destination 😿</h5>
     {% endif %}
   </div>
 
-    <!-- <div class="col s6">
+  <div class="col s6">
+    <h3>Available Destinations</h3>
+    {% if not_associated_destinations %} 
+      {% for destination in not_associated_destinations %}
+    <div class="card">
+      <div class="card-content">
+        <span class="card-title">{{ destination.name }}</span>
+      </div>
+      <div class="card-action">
+        <form
+          action="{% url 'assoc_destination' trip_id=trips.id destination_id=destination.id %}"
+          method="POST"
+        >
+          {% csrf_token %}
+          <button type="submit" class="btn">Add</button>
+        </form>
+      </div>
+    </div>
+    {% endfor %} {% else %}
+    <h5>No Available Destinations</h5>
+    {% endif %}
+  </div>
+
+  <!-- <div class="col s6">
       <a href="{% url 'add_destinations' trips.id %}">Update Destinations</a>
       {% if trips.destination_ids.count %}
         {% for destination in trips.destination_ids.all %}
