@@ -45,6 +45,12 @@ class TripDetail(LoginRequiredMixin, DetailView):
         
         # Pass the associated destinations to the template context
         context['associated_destinations'] = trip.destination_ids.all()
+
+        # Passing checklist form
+        context['checklist_form'] = ChecklistForm()
+
+        trip = context['object']
+        context['checklists'] = Checklist.objects.filter(trip_id=trip)
         
         return context
     
@@ -91,11 +97,18 @@ class DestinationDelete(LoginRequiredMixin, DeleteView):
 # View for routes: add checklist, add activity, add photo, assoc destination
 @login_required
 def add_checklist(request, trip_id):
-    form = ChecklistForm(request.POST)
-    if form.is_valid():
-        new_checklist = form.save(commit=False)
-        new_checklist.trip_id = trip_id
-        new_checklist.save()
+    trip = get_object_or_404(Trips, pk=trip_id)
+    print(trip)
+    if request.method == 'POST':
+        form = ChecklistForm(request.POST)
+        print(form.data)
+        if form.is_valid():
+            checklist = form.save(commit=False)
+            checklist.trip = trip  # Assign the trip instance
+            checklist.save()
+            return redirect('trips_detail', pk=trip_id)
+
+    # If there's a problem with the form or request method
     return redirect('trips_detail', pk=trip_id)
 
 @login_required
@@ -189,3 +202,9 @@ def signup(request):
     context = {'form': form, 'error_message': error_message}
     return render(request, 'registration/signup.html', context)
 
+@login_required
+def mark_complete(request, checklist_id):
+    checklist = get_object_or_404(Checklist, pk=checklist_id)
+    checklist.complete = True
+    checklist.save()
+    return redirect('trips_detail', pk=checklist.trip_id)
