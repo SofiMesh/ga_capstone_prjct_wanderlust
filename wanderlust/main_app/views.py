@@ -85,13 +85,22 @@ class DestinationIndex(LoginRequiredMixin, ListView):
 class DestinationDetail(LoginRequiredMixin, DetailView): 
     model = Destinations
     fields = '__all__'
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     name = self.object.name
-    #     country = self.object.country
-    #     context['latlong'] = json.loads(gmaps.geocode(f'{name}, {country}'))
-        
-    #     return context
+    
+    def get_location_details(self, name, country):
+        locdata = gmaps.geocode(f'{name}, {country}')
+        latlong = list(locdata[0]['geometry']['location'].values())
+        lat = latlong[0]
+        long = latlong[1]
+        return lat, long
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        name = self.object.name
+        country = self.object.country
+        lat, long = self.get_location_details(name, country)
+        timezone = gmaps.timezone((lat, long))
+        context['timezone'] = timezone
+        return context
     
 
 class DestinationCreate(LoginRequiredMixin, CreateView): 
