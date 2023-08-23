@@ -6,6 +6,7 @@ from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+
 from .models import Trips, Destinations, Photos, Checklist, Travelers, Activities
 from .forms import ChecklistForm, ActivityForm, SignupForm, AddDestinationForm
 from datetime import datetime
@@ -29,6 +30,20 @@ def about(request):
 class TripIndex(LoginRequiredMixin, ListView): 
     model = Trips
     fields = '__all__'
+
+    template_name = 'trip_index.html'
+    context_object_name = 'trips'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        today = timezone.now().date()
+        
+        for trip in context['trips']:
+            days_until = (trip.startDate - today).days
+            trip.days_until = days_until
+
+        return context
+    
 
 
 class TripDetail(LoginRequiredMixin, DetailView): 
