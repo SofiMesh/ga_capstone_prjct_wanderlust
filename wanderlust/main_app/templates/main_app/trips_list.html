@@ -1,13 +1,9 @@
-{% extends 'base.html' %} 
-
-
-{% block content %}
+{% extends 'base.html' %} {% block content %}
 <h1>Upcoming Trips</h1>
 
-{% if object_list %}
+{% if upcoming_trips %}
 <ul style="display: flex; gap: 20px">
-  {% for trip in object_list %}
-    {% if trips.days_until > 0%}
+  {% for trip in upcoming_trips %}
   <li
     style="
       background-color: #9cc8e1;
@@ -32,8 +28,7 @@
       <img
         src="{{ photo.url }}"
         alt="Destination Image"
-        style="flex-shrink: 0; width: 100%; object-fit: cover; margin-top: 20px;"
-      
+        style="flex-shrink: 0; width: 100%; object-fit: cover; margin-top: 20px"
       />
         {% endfor %} 
       {% endfor %}
@@ -59,7 +54,7 @@
       >
       <p>{{ trip.startDate }} - {{ trip.endDate }}</p>
     </div>
-    <div class="days-left" style="position: absolute; top: 0; right: 10px;">
+    <div class="days-left" style="position: absolute; top: 0; right: 10px">
       {{ trip.days_until }} days until start
     </div>
 
@@ -93,10 +88,104 @@
     </script>
   </li>
   {% endfor %}
-
 </ul>
 {% else %}
-<p>
-  No trips yet. <a href="{% url 'trips_create' %}">Create your first trip!</a>
-</p>
-{% endif %} {% endblock %}
+<p>No upcoming trips.</p>
+{% endif %}
+
+<h1>Past Trips</h1>
+
+{% if past_trips %}
+<ul style="display: flex; gap: 20px">
+  {% for trip in past_trips %}
+  <li
+    style="
+      background-color: #9cc8e1;
+      margin-bottom: 10px;
+      height: 320px; /* Increased height to accommodate trip details */
+      width: 400px;
+      position: relative; /* Position the container */
+      overflow: hidden; /* Hide overflowing content */
+      display: flex;
+      flex-direction: column; /* Set container as a column */
+      justify-content: space-between; /* Space between content */
+    "
+  >
+    <div
+      class="image-scroll"
+      style="display: flex; transition: transform 1s ease-in-out"
+      onmouseenter="startScroll(this)"
+      onmouseleave="stopScroll(this)"
+    >
+      {% for destination in trip.destination_ids.all %} 
+        {% for photo in destination.photos_set.all %}
+      <img
+        src="{{ photo.url }}"
+        alt="Destination Image"
+        style="flex-shrink: 0; width: 100%; object-fit: cover; margin-top: 20px"
+      />
+        {% endfor %} 
+      {% endfor %}
+    </div>
+    <div
+      class="trip-details"
+      style="
+        position: absolute; /* Position the trip details */
+        bottom: 0; /* Fix at the bottom */
+        background-color: rgba(
+          255,
+          255,
+          255,
+          0.9
+        ); /* Semi-transparent background */
+        padding: 10px;
+        width: 100%;
+        text-align: center;
+      "
+    >
+      <a href="{% url 'trips_detail' pk=trip.id %}" style="font-size: x-large"
+        >{{ trip.name }}</a
+      >
+      <p>{{ trip.startDate }} - {{ trip.endDate }}</p>
+    </div>
+    <div class="days-left" style="position: absolute; top: 0; right: 10px">
+      {{ trip.days_until }} days ago
+    </div>
+
+    <script>
+      let scrollInterval;
+      let isMouseOver = false;
+
+      function startScroll(container) {
+        if (!isMouseOver) {
+          isMouseOver = true;
+          scrollInterval = setInterval(function () {
+            if (!isMouseOver) {
+              clearInterval(scrollInterval);
+              return;
+            }
+            const firstImage = container.querySelector("img");
+            const imageWidth = firstImage.offsetWidth;
+            container.style.transform = `translateX(-${imageWidth}px)`;
+            container.appendChild(firstImage.cloneNode(true));
+            container.removeChild(firstImage);
+            container.style.transform = "translateX(0)";
+          }, 2000);
+        }
+      }
+
+      function stopScroll(container) {
+        isMouseOver = false;
+        clearInterval(scrollInterval);
+        container.style.transform = "translateX(0)";
+      }
+    </script>
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<p>No past trips.</p>
+{% endif %} 
+
+
+{% endblock %}

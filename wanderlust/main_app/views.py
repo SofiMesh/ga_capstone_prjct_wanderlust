@@ -27,20 +27,30 @@ def about(request):
     return render(request, 'about.html')
 
 # View for routes: Trips CRUD 
-class TripIndex(LoginRequiredMixin, ListView): 
+class TripIndex(LoginRequiredMixin, ListView):
     model = Trips
-    fields = '__all__'
-
-    template_name = 'trip_index.html'
-    context_object_name = 'trips'
+    template_name = "main_app/trip_index.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        today = timezone.now().date()
-        
-        for trip in context['trips']:
-            days_until = (trip.startDate - today).days
+        all_trips = Trips.objects.all()
+
+        # Separate upcoming and past trips
+        current_date = timezone.now().date()
+        upcoming_trips = []
+        past_trips = []
+
+        for trip in all_trips:
+            days_until = (trip.startDate - current_date).days
             trip.days_until = days_until
+
+            if days_until > 0:
+                upcoming_trips.append(trip)
+            else:
+                past_trips.append(trip)
+
+        context['upcoming_trips'] = upcoming_trips
+        context['past_trips'] = past_trips
 
         return context
     
