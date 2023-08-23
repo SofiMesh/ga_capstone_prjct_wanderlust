@@ -1,3 +1,4 @@
+from typing import Any, Dict
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView, DetailView
@@ -5,14 +6,17 @@ from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-
 from .models import Trips, Destinations, Photos, Checklist, Travelers, Activities
 from .forms import ChecklistForm, ActivityForm, SignupForm, AddDestinationForm
-
+from datetime import datetime
 # import these for aws upload
+import googlemaps
+import requests, json
 import uuid # this is to make random numbers
 import boto3 # this is to make calls to aws
 import os # os.environ['BUCKET_NAME'] is to read environment variables
+
+gmaps = googlemaps.Client(key='AIzaSyCgRAHdFcRKhO-Qszsqpt_fOq4Q7wUMK8Y')
 
 # Views for routes: '/' & '/about/'
 def home(request):
@@ -81,7 +85,15 @@ class DestinationIndex(LoginRequiredMixin, ListView):
 class DestinationDetail(LoginRequiredMixin, DetailView): 
     model = Destinations
     fields = '__all__'
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     name = self.object.name
+    #     country = self.object.country
+    #     context['latlong'] = json.loads(gmaps.geocode(f'{name}, {country}'))
+        
+    #     return context
     
+
 class DestinationCreate(LoginRequiredMixin, CreateView): 
     model = Destinations
     fields = ['name', 'country', 'language', 'currency']
@@ -208,3 +220,8 @@ def mark_complete(request, checklist_id):
     checklist.complete = True
     checklist.save()
     return redirect('trips_detail', pk=checklist.trip_id)
+
+
+
+
+    
