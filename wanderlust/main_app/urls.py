@@ -20,6 +20,7 @@ urlpatterns = [
   path('trips/<int:trip_id>/add_activity/', views.add_activity, name='add_activity'),
   # path('trips/<int:trip_id>/add_photo/', views.add_photo, name='add_trip_photo'),
   path('destinations/<int:destination_id>/add_photo/', views.add_photo, name='add_destination_photo'),
+  path('destinations/<int:destination_id>/remove_photo/<int:photo_id>', views.remove_photo, name='remove_destination_photo'),
   path('checklist/complete/<int:checklist_id>/', views.mark_complete, name='mark_complete'),
 
   # path('trips/<int:trip_id>/assoc_destination/<int:destination_id>/', views.assoc_destination, name='assoc_destination'),

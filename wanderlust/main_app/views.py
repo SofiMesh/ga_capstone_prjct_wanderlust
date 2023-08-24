@@ -9,8 +9,11 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils import timezone
+from django.contrib.auth.models import User
+from .forms import InvitationForm
+from django.utils import timezone
 
-from .models import Trips, Destinations, Photos, Checklist, Travelers, Activities
+from .models import Trips, Destinations, Photos, Checklist, Travelers, Activities, TripRequest
 from .forms import ChecklistForm, ActivityForm, SignupForm, AddDestinationForm
 from datetime import datetime
 # import these for aws upload
@@ -63,8 +66,10 @@ class TripDetail(LoginRequiredMixin, DetailView):
     model = Trips
     fields = '__all__'
     
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['invitation_form'] = InvitationForm()
 
          # Get the trip object from the context
         trip = context['object']
@@ -95,6 +100,8 @@ class TripDetail(LoginRequiredMixin, DetailView):
         
         # Pass the not_associated_destinations queryset to the template context
         context['not_associated_destinations'] = not_associated_destinations
+
+        context['users'] = User.objects.all()
         
         # Pass the associated destinations to the template context
         context['associated_destinations'] = trip.destination_ids.all()
@@ -106,6 +113,19 @@ class TripDetail(LoginRequiredMixin, DetailView):
         context['checklists'] = Checklist.objects.filter(trip_id=trip)
         
         return context
+    
+    def post(self, request, *args, **kwargs):
+        trip = self.get_object()
+        invitation_form = InvitationForm(request.POST)
+        if invitation_form.is_valid():
+            invited_users = invitation_form.cleaned_data['invited_users']
+            # Send invitations to invited_users using email or notifications
+            # You need to implement the invitation sending logic here
+            # After sending invitations, you can redirect to the same page or a different one
+            return redirect('trips_detail', pk=trip.pk)  # Use 'trip_id' instead of 'pk'
+        
+        return self.render_to_response(self.get_context_data(invitation_form=invitation_form))
+
     
     
 class TripCreate(LoginRequiredMixin, CreateView): 
@@ -255,6 +275,13 @@ def add_photo(request, destination_id):
     
     return redirect('destinations_detail', pk=destination_id)
 
+@login_required
+def remove_photo(request, destination_id, photo_id):
+    photo = Photos.objects.get(id=photo_id)
+    photo.delete()
+    return redirect('destinations_detail', pk=destination_id)
+
+
 # View for routes: login, signup, logout
 def signup(request):
     error_message = ''
@@ -284,7 +311,21 @@ def mark_complete(request, checklist_id):
     checklist.save()
     return redirect('trips_detail', pk=checklist.trip_id)
 
+def view_requests(request):
+    received_requests = TripRequest.objects.filter(receiver=request.user)
+    return render(request, 'view_requests.html', {'received_requests': received_requests})
 
+@login_required
+def accept_request(request, trip_id):
+    trip = get_object_or_404(Trips, id=trip_id)
+    trip.accepted_users.add(request.user)
+    return redirect('trips_list')
+
+def reject_request(request, request_id):
+    trip_request = TripRequest.objects.get(id=request_id, receiver=request.user)
+    trip_request.status = 'rejected'
+    trip_request.save()
+    return redirect('view_requests')
 
 
     

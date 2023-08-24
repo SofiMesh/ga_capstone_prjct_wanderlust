@@ -23,6 +23,7 @@ class Trips(models.Model):
     budget = models.IntegerField(null=True)
     destination_ids = models.ManyToManyField(Destinations, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    accepted_users = models.ManyToManyField(User, related_name='accepted_trips', blank=True)
 
     def __str__(self):
         return self.name
@@ -32,6 +33,18 @@ class Trips(models.Model):
 
     class Meta: 
         ordering = ['-startDate']
+
+class TripRequest(models.Model):
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_requests')
+    receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_requests')
+    trip = models.ForeignKey(Trips, on_delete=models.CASCADE)
+    STATUS_CHOICES = (
+        ('pending', 'Pending'),
+        ('accepted', 'Accepted'),
+        ('rejected', 'Rejected'),
+    )
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
+    created_at = models.DateTimeField(auto_now_add=True)
 
 class Checklist(models.Model):
     todos = models.CharField(max_length=250)

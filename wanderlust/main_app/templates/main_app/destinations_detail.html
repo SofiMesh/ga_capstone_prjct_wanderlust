@@ -3,8 +3,8 @@
 
 {% block content %}
 
-<h1>This is a Destination</h1>
-<div class="row">
+
+<div class="row" style="margin-top: 50px;">
   <div class="col s6 col-offset-3">
     <div class="card">
       <div class="card-content">
@@ -19,7 +19,15 @@
     </div>
   <!-- Insert photo markup below this comment -->
   {% for photo in destinations.photos_set.all %}
-    <img class="responsive-img card-panel" src="{{photo.url}}">
+  <div>
+
+  
+    <img class="responsive-img" src="{{photo.url}}" style="height: 100px; width: 100px; object-fit: cover; margin-left: 20px;">
+    <form action="{% url 'remove_destination_photo' destinations.id photo.id %}">
+      <br><br>
+      <button type="submit" class="btn">Delete Photo</button>
+  </form>
+  </div>
   {% empty %}
     <div class="card-panel teal-text center-align">No Photos Uploaded</div>
   {% endfor %}
@@ -33,7 +41,7 @@
     <iframe
     width="600"
     height="450"
-    style="border:0"
+    style="border:0; margin-left: 25px;"
     loading="lazy"
     allowfullscreen
     referrerpolicy="no-referrer-when-downgrade"
@@ -42,8 +50,8 @@
     >
 
   </iframe>
-  <div class="card">
-  <div class="card-content">
+  <div class="card" style="float: right">
+  <div class="card-content" >
     <p>Timezone ID: {{ timezone.timeZoneId }}</p>
     <p>Timezone Name: {{ timezone.timeZoneName }}</p>
 </div>

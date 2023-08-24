@@ -1,15 +1,15 @@
 {% extends 'base.html' %} {% load static %} {% block content %}
-<h1>Destination List</h1>
+<h1>Places to go</h1>
 <div class="container mt-5">
   {% if object_list %}
   <div class="row">
     {% for destination in object_list %}
     <div class="col s12 m4">
-      <div class="card">
+      <div >
         <div class="card-content">
           {% with first_photo=destination.photos_set.first %} 
             {% if first_photo%}
-          <img class="responsive-img card-panel" src="{{ first_photo.url }}" />
+          <img class="responsive-img" src="{{ first_photo.url }}" style="height: 200px; width: auto;" />
             {% else %}
           <div class="card-panel teal-text center-align">
             No Photos
