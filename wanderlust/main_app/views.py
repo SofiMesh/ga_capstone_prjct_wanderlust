@@ -9,9 +9,11 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils import timezone
+
 from django.contrib.auth.models import User
 from .forms import InvitationForm
 from django.utils import timezone
+
 
 from .models import Trips, Destinations, Photos, Checklist, Travelers, Activities, TripRequest
 from .forms import ChecklistForm, ActivityForm, SignupForm, AddDestinationForm

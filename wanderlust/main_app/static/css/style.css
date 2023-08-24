@@ -3,21 +3,15 @@ body {
     min-height: 100vh;
     flex-direction: column;
     color: black;
+    /* background-image: url("/static/assets/images/hero_img.png");
+    background-repeat: no-repeat;
+    background-size: cover; */
+    
 }
 
 .about-section{
 background-color: lightcyan;
 font-size: 20px;
-}
-
-
-.addTripImg {
-    position: relative;
-    bottom: 45vh;
-    left: 30vh;
-    border-radius: 50%;
-
-    
 }
 
 
@@ -32,17 +26,15 @@ flex-direction: column;
     padding: 20px;
     margin: 10px;  
     border-radius: 5px;
-    
   }
   
 
   .card-content {
     font-size: 18px;
+    color: grey;
+    
   }
   
-  
-
-
   footer.page-footer {
     padding-top: 1;
     text-align: right;
@@ -50,6 +42,9 @@ flex-direction: column;
     background-color:lightgrey;
   }
 
+  
 
-  
-  
+  .destination-form{
+   color:beige;
+  }
+
