@@ -2,25 +2,21 @@
 {% load static %}
 
 {% block content %}
-<div class="signup">
-<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
-<h1>Sign Up</h1>
-
-<div class="card">
-  <div class="card-content">
-    <p class="red-text">{{ error_message }}</p>
-
-
-<form method="POST" action="{% url 'signup' %}">
-
-  {% csrf_token %}
-  {{ form.as_p }}
-
-  <input type="submit" class="btn" value="Sign Up">
-  
-</form>
-</div>
-</div>
-</div>
-
+  <div class="signup">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+    <div class="flex-container">
+      <img src="{% static 'assets/images/hero_img.png' %}" alt="Hero Image">
+      <div class="signup-form">
+        <h1>Sign Up</h1>
+        <p class="red-text">{{ error_message }}</p>
+        <form method="POST" action="{% url 'signup' %}">
+          <div class="card">
+            <div class="card-content">
+          {% csrf_token %}
+          {{ form.as_p }}
+          <input type="submit" class="btn" value="Sign Up">
+        </form>
+      </div>
+    </div>
+  </div>
 {% endblock %}

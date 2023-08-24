@@ -1,7 +1,11 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-
+<div class="login">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+    <div class="login-container">
+      <img src="{% static 'assets/images/hero_img.png' %}" alt="Hero Image">
+      <div class="login-form">
 <h1>Log In</h1>
 
 <form method="POST" action="{% url 'login' %}">
