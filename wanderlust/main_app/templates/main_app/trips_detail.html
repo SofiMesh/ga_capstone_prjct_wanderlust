@@ -73,20 +73,39 @@
         <li>{{ checklist.todos }}: {% if checklist.complete %}Done{% else %}<a href="{% url 'mark_complete' checklist.id %}">Mark as complete</a>{% endif %}</li>
 
     {% endfor %}
-</ul>
-
-  <!-- <div class="col s6">
-      <a href="{% url 'add_destinations' trips.id %}">Update Destinations</a>
-      {% if trips.destination_ids.count %}
-        {% for destination in trips.destination_ids.all %}
-          <div class="card">
-            <div class="card-content">
-              <span class="card-title">{{ destination.name }}</span>
+  </ul>
+  <div class = 'card'>
+    <div class = 'card-content'>
+      <span class = 'card-title'>Places To Visit</span>
+      {% for destination_name, nearby_places in nearby_places_by_destination.items %}
+        <h5>Nearby Places for {{ destination_name }}:</h5>
+        <ul>
+          {% for place in nearby_places %}
+            {% if place.opening_hours.open_now %}
+            <div class="card-panel teal-text center-align">
+              {% if place.photos %}
+              <img src="https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference={{ place.photos.0.photo_reference }}&key=AIzaSyCgRAHdFcRKhO-Qszsqpt_fOq4Q7wUMK8Y" alt="{{ place.name }}">
+              {% endif %}
+              <li>{{ place.name }}: {{ place.vicinity }} </li>
+              <li>Rating: {{place.rating|default:"0"}}/5 </li>
+              <li>Reviewers: {{place.user_ratings_total|default:"0"}}</li>
+              <li>(Open Now)</li>
             </div>
-          </div>
-        {% endfor %}
-      {% endif %}
-    </div> -->
+            {% else %}
+            <div class="card-panel red-text center-align">
+              {% if place.photos %}
+              <img src="https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference={{ place.photos.0.photo_reference }}&key=AIzaSyCgRAHdFcRKhO-Qszsqpt_fOq4Q7wUMK8Y" alt="{{ place.name }}">
+              {% endif %}
+              <li>{{ place.name }}: {{ place.vicinity }} </li>
+              <li>Rating: {{place.rating|default:"0"}}/5 </li>
+              <li>Reviewers: {{place.user_ratings_total|default:"0"}}</li>
+              <li>(Closed Now)</li>
+            </div>
+            {% endif %}
+          {% endfor %}
+        </ul>
+      {% endfor %}
+    </div>
 </div>
 
 {% endblock %}
