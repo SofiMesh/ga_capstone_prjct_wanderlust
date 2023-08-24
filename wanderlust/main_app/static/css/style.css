@@ -3,9 +3,7 @@ body {
     min-height: 100vh;
     flex-direction: column;
     color: black;
-    /* background-image: url("/static/assets/images/hero_img.png");
-    background-repeat: no-repeat;
-    background-size: cover; */
+
     
 }
 
@@ -30,7 +28,7 @@ flex-direction: column;
   
 
   .card-content {
-    font-size: 18px;
+    font-size: 15px;
     color: grey;
     
   }
@@ -40,11 +38,35 @@ flex-direction: column;
     text-align: right;
     position: relative;
     background-color:lightgrey;
+    font-size: 30px;
   }
 
   
 
-  .destination-form{
-   color:beige;
+  
+  .flex-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 0px; 
+    background-color: antiquewhite;
+  }
+
+  .signup-form {
+    margin-left: 20px; 
+    background-color: antiquewhite;
+  }
+
+  .login-form{
+    margin-left: 20px; 
+
+  }
+
+  .login-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 90px; 
+    background-color: antiquewhite;
   }
 
