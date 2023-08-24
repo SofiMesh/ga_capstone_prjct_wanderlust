@@ -1,13 +1,14 @@
 {% extends 'base.html' %} {% block content %}
 
-<h1>This is a trip</h1>
-<div class="row">
+
+<div style="margin-bottom: 80px;">
   <div class="col s6 col-offset-3">
     <div class="card">
       <div class="card-content">
         <span class="card-title">{{ object.name }}</span>
         <p>Start Date: {{ object.startDate }}</p>
         <p>End Date: {{ object.endDate }}</p>
+        <p>Invite more travellers</p>
       </div>
       <div class="card-action">
         <a href="{% url 'trips_update' trips.id %}">Edit</a>
@@ -15,53 +16,112 @@
       </div>
     </div>
   </div>
+<div>
 
-  <div class="col s6">
-    <h3>{{ trips.name }}'s Destinations</h3>
-    {% if associated_destinations %} {% for destination in associated_destinations %}
-    <div class="card">
-      <div class="card-content">
-        <span class="card-title"> {{ destination.name }} </span>
-      </div>
-      <div class="card-action">
-        <form
-          action="{% url 'unassoc_destination' trip_id=trips.id destination_id=destination.id %}"
-          method="POST"
-        >
-          {% csrf_token %}
-          <button type="submit" class="btn">Remove</button>
-        </form>
-      </div>
-    </div>
-    {% endfor %} {% else %}
+  <div class="trip_content" style="display: flex; justify-content: space-between;">
+<div class="destinations_list">
+  <!-- Trips Destinations -->
+  
+  <div>
+    <h4>Planned Destinations</h4>
+    <div style="display: flex; gap: 20px;">
+    {% if associated_destinations %} 
+    
+      {% for destination in associated_destinations %}
+        
+          <div>
+            <div class="card-content">
+              {% with first_photo=destination.photos_set.first %} 
+                  {% if first_photo%}
+                <img class="responsive-img" src="{{ first_photo.url }}" style="height: 200px; width: 200px;" />
+                  {% else %}
+                <div class="card-panel teal-text center-align">
+                  <img src="assets/images/hero_img.png" alt="">
+                </div>
+                  {% endif %} 
+                {% endwith %}
+              <h5 class="card-title"> {{ destination.name }} </h6>
+              <span class="card-title"> {{ destination.country }} </span>
+            </div>
+            <div class="card-action">
+              <form
+                action="{% url 'unassoc_destination' trip_id=trips.id destination_id=destination.id %}"
+                method="POST"
+              >
+                {% csrf_token %}
+                <button type="submit" class="btn">Remove</button>
+              </form>
+            </div>
+          
+        </div>
+        {% endfor %} 
+    {% else %}
     <h5>Add your first destination 😿</h5>
     {% endif %}
+    </div>
+      
   </div>
+    
+   
+       
 
-  <div class="col s6">
-    <h3>Available Destinations</h3>
+
+  <!-- Destinations not added to trip -->
+  <div>
+    <h4>More Destinations related to your trip</h4>
     {% if not_associated_destinations %} 
       {% for destination in not_associated_destinations %}
-    <div class="card">
-      <div class="card-content">
-        <span class="card-title">{{ destination.name }}</span>
-      </div>
-      <div class="card-action">
-        <form
-          action="{% url 'assoc_destination' trip_id=trips.id destination_id=destination.id %}"
-          method="POST"
-        >
-          {% csrf_token %}
-          <button type="submit" class="btn">Add</button>
-        </form>
-      </div>
+      <div>
+        <div class="card-content">
+          {% with first_photo=destination.photos_set.first %} 
+              {% if first_photo%}
+            <img class="responsive-img" src="{{ first_photo.url }}" style="height: 200px; width: 200px;" />
+              {% else %}
+            <div class="card-panel teal-text center-align">
+              <img src="assets/images/hero_img.png" alt="">
+            </div>
+              {% endif %} 
+            {% endwith %}
+          <h5 class="card-title"> {{ destination.name }} </h6>
+          <span class="card-title"> {{ destination.country }} </span>
+        </div>
+        <div class="card-action">
+          <form
+            action="{% url 'assoc_destination' trip_id=trips.id destination_id=destination.id %}"
+            method="POST"
+          >
+            {% csrf_token %}
+            <button type="submit" class="btn">Add</button>
+          </form>
+        </div>
+      
     </div>
     {% endfor %} {% else %}
     <h5>No Available Destinations</h5>
     {% endif %}
   </div>
+</div>
+<div>
+<h4>Invite Users to Join this Trip</h4>
+<form method="post" action="">
+  {% csrf_token %}
+  {{ invitation_form.as_p }}
+  <button type="submit">Send Invitations</button>
+</form>
+</div>
+
+<!-- <div>
+<h4>Registered Users</h4>
+<ul>
+  {% for user in users %}
+    <li>{{ user.username }}</li>
+  {% endfor %}
+</ul>
+</div> -->
 
 
+<!-- Checklist -->
+<div class="todo_checklist">
   <form action="{% url 'add_checklist' trip_id=trips.id %}" method="POST">
     {% csrf_token %}
     <!-- Render the inputs -->
@@ -73,20 +133,41 @@
         <li>{{ checklist.todos }}: {% if checklist.complete %}Done{% else %}<a href="{% url 'mark_complete' checklist.id %}">Mark as complete</a>{% endif %}</li>
 
     {% endfor %}
-</ul>
-
-  <!-- <div class="col s6">
-      <a href="{% url 'add_destinations' trips.id %}">Update Destinations</a>
-      {% if trips.destination_ids.count %}
-        {% for destination in trips.destination_ids.all %}
-          <div class="card">
-            <div class="card-content">
-              <span class="card-title">{{ destination.name }}</span>
+  </ul>
+</div>
+</div>
+  <div class = 'card'>
+    <div class = 'card-content'>
+      <span class = 'card-title'>Places To Visit</span>
+      {% for destination_name, nearby_places in nearby_places_by_destination.items %}
+        <h5>Nearby Places for {{ destination_name }}:</h5>
+        <ul>
+          {% for place in nearby_places %}
+            {% if place.opening_hours.open_now %}
+            <div class="card-panel teal-text center-align">
+              {% if place.photos %}
+              <img src="https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference={{ place.photos.0.photo_reference }}&key=AIzaSyCgRAHdFcRKhO-Qszsqpt_fOq4Q7wUMK8Y" alt="{{ place.name }}">
+              {% endif %}
+              <li>{{ place.name }}: {{ place.vicinity }} </li>
+              <li>Rating: {{place.rating|default:"0"}}/5 </li>
+              <li>Reviewers: {{place.user_ratings_total|default:"0"}}</li>
+              <li>(Open Now)</li>
             </div>
-          </div>
-        {% endfor %}
-      {% endif %}
-    </div> -->
+            {% else %}
+            <div class="card-panel red-text center-align">
+              {% if place.photos %}
+              <img src="https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference={{ place.photos.0.photo_reference }}&key=AIzaSyCgRAHdFcRKhO-Qszsqpt_fOq4Q7wUMK8Y" alt="{{ place.name }}">
+              {% endif %}
+              <li>{{ place.name }}: {{ place.vicinity }} </li>
+              <li>Rating: {{place.rating|default:"0"}}/5 </li>
+              <li>Reviewers: {{place.user_ratings_total|default:"0"}}</li>
+              <li>(Closed Now)</li>
+            </div>
+            {% endif %}
+          {% endfor %}
+        </ul>
+      {% endfor %}
+    </div>
 </div>
 
 {% endblock %}

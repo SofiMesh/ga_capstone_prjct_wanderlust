@@ -2,6 +2,7 @@ from django import forms
 from django.forms import ModelForm
 from django.contrib.auth.forms import UserCreationForm
 from .models import Checklist, Activities, User, Trips, Destinations, Travelers
+from django.contrib.auth.models import User
 
 class ChecklistForm(ModelForm):
   class Meta:
@@ -23,3 +24,10 @@ class AddDestinationForm(forms.ModelForm):
         model = Trips
         exclude = ['name', 'startDate', 'endDate', 'budget', 'user']
         widgets = {'destination_ids': forms.CheckboxSelectMultiple} 
+
+
+class InvitationForm(forms.Form):
+    invited_users = forms.ModelMultipleChoiceField(
+        queryset=User.objects.all(),
+        widget=forms.CheckboxSelectMultiple
+    )
