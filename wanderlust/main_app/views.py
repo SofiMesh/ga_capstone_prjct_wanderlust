@@ -113,18 +113,6 @@ class TripDetail(LoginRequiredMixin, DetailView):
         context['checklists'] = Checklist.objects.filter(trip_id=trip)
         
         return context
-    
-    def post(self, request, *args, **kwargs):
-        trip = self.get_object()
-        invitation_form = InvitationForm(request.POST)
-        if invitation_form.is_valid():
-            invited_users = invitation_form.cleaned_data['invited_users']
-            # Send invitations to invited_users using email or notifications
-            # You need to implement the invitation sending logic here
-            # After sending invitations, you can redirect to the same page or a different one
-            return redirect('trips_detail', pk=trip.pk)  # Use 'trip_id' instead of 'pk'
-        
-        return self.render_to_response(self.get_context_data(invitation_form=invitation_form))
 
     
     
@@ -189,7 +177,24 @@ class DestinationDelete(LoginRequiredMixin, DeleteView):
     model = Destinations
     success_url = '/destinations/'
 
-# View for routes: add checklist, add activity, add photo, assoc destination
+# View for routes: add checklist, add activity, add photo, assoc destination, invitations
+@login_required
+def invite_users(request, trip_id):
+    trip = get_object_or_404(Trips, id=trip_id)
+    print(trip_id)
+    if request.method == 'POST':
+        form = InvitationForm(request.POST, instance=trip)
+        if form.is_valid():
+            accepted_users = form.save()
+            accepted_users.trip = trip
+            accepted_users.save()
+            print(accepted_users)
+            print(form.data)
+            return redirect('trips_detail', pk=trip_id)
+    else:
+        form = InvitationForm(instance=trip)
+    return render(request, 'main_app/invite_users.html', {'form': form, 'trip': trip, 'trip_id': trip_id})
+
 @login_required
 def add_checklist(request, trip_id):
     trip = get_object_or_404(Trips, pk=trip_id)

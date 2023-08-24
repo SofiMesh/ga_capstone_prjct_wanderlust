@@ -25,9 +25,8 @@ class AddDestinationForm(forms.ModelForm):
         exclude = ['name', 'startDate', 'endDate', 'budget', 'user']
         widgets = {'destination_ids': forms.CheckboxSelectMultiple} 
 
-
-class InvitationForm(forms.Form):
-    invited_users = forms.ModelMultipleChoiceField(
-        queryset=User.objects.all(),
-        widget=forms.CheckboxSelectMultiple
-    )
+class InvitationForm(forms.ModelForm):
+    class Meta:
+        model = Trips # this is the model we're trying to add data to
+        fields = ['accepted_users'] # this is the field it's adding to in the Trips model
+        widgets = {'accepted_users': forms.CheckboxSelectMultiple}

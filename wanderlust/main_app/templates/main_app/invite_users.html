@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Travels going to {{trip.name}}</h1>
+<form method="post" action="{% url 'invite_users' trip_id=trip.id %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Update">
+</form>
+{% endblock %} 
