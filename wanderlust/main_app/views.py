@@ -1,11 +1,14 @@
 from typing import Any, Dict
+from operator import itemgetter
 from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView, DetailView
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.utils import timezone
 
 from .models import Trips, Destinations, Photos, Checklist, Travelers, Activities
 from .forms import ChecklistForm, ActivityForm, SignupForm, AddDestinationForm
@@ -69,6 +72,27 @@ class TripDetail(LoginRequiredMixin, DetailView):
         # Get all destinations that are not associated with the trip
         not_associated_destinations = Destinations.objects.exclude(id__in=trip.destination_ids.all())
         
+        # Get methods from destinations details
+        dest_view = DestinationDetail()
+        
+        # Nearby Places
+        nearby_places_by_destination = {}
+        # Loop through each destination in the trip
+        # Get the lat and long for each destination
+        # Then get the nearby places for each destination
+        for destination in trip.destination_ids.all():
+            name = destination.name
+            country = destination.country
+            lat, long = dest_view.get_location_details(name, country)
+            nearby_places = dest_view.get_nearby_places(lat, long)
+            # sort places by rating
+            sorted_nearby_places = sorted(nearby_places, key=lambda x: (x.get('user_ratings_total',0),x.get('rating',0)), reverse=True)
+            # Add the nearby places to the nearby_places_by_destination dictionary
+            nearby_places_by_destination[destination] = sorted_nearby_places
+            
+        # Pass the nearby places by destination to the template context
+        context['nearby_places_by_destination'] = nearby_places_by_destination
+        
         # Pass the not_associated_destinations queryset to the template context
         context['not_associated_destinations'] = not_associated_destinations
         
@@ -118,6 +142,10 @@ class DestinationDetail(LoginRequiredMixin, DetailView):
         long = latlong[1]
         return lat, long
     
+    def get_nearby_places(self, lat, long):
+        places = gmaps.places_nearby(location=(lat, long), radius=10000, type=['tourist_attraction','casino','shopping_mall','amusement_park','aquarium','art_gallery','cafe','restaurant','bar','department_store','zoo','landmark','natural_feature'], language='en-US')
+        return places['results']
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         name = self.object.name
@@ -125,6 +153,7 @@ class DestinationDetail(LoginRequiredMixin, DetailView):
         lat, long = self.get_location_details(name, country)
         timezone = gmaps.timezone((lat, long))
         context['timezone'] = timezone
+        context['results'] = self.get_nearby_places(lat, long)
         return context
     
 
