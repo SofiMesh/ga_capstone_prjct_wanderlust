@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>Received Requests</h1>
+
+{% if received_requests %}
+<ul>
+  {% for request in received_requests %}
+  <li>
+    Sender: {{ request.sender.username }}
+    <br>
+    Status: {{ request.status }}
+    <br>
+    {% if request.status == 'pending' %}
+    <a href="{% url 'accept_request' request.id %}">Accept</a>
+    <a href="{% url 'reject_request' request.id %}">Reject</a>
+    {% endif %}
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<p>No received requests.</p>
+{% endif %}
+
+{% endblock %}

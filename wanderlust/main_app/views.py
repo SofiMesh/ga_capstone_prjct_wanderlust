@@ -9,6 +9,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils import timezone
+from django.http import JsonResponse
 
 from django.contrib.auth.models import User
 from .forms import InvitationForm
@@ -314,9 +315,11 @@ def signup(request):
 @login_required
 def mark_complete(request, checklist_id):
     checklist = get_object_or_404(Checklist, pk=checklist_id)
-    checklist.complete = True
+    checklist.complete = not checklist.complete  # Toggle completion status
     checklist.save()
-    return redirect('trips_detail', pk=checklist.trip_id)
+
+    # Return a JSON response indicating success and the updated completion status
+    return JsonResponse({'success': True, 'complete': checklist.complete})
 
 def view_requests(request):
     received_requests = TripRequest.objects.filter(receiver=request.user)

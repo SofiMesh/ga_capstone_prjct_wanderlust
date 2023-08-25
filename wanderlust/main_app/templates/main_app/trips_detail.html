@@ -1,28 +1,93 @@
-{% extends 'base.html' %} {% block content %}
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
 
+<style>
+  .checklist {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.checklist li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  position: relative;
+  font-size: 16px;
+}
+
+.checklist .checkmark {
+  width: 24px;
+  height: 24px;
+  border: 2px solid #ccc;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.checklist li.completed .checkmark {
+  background-color: #00cc00; /* Green background for completed items */
+  border-color: #00cc00; /* Green border for completed items */
+}
+
+.checklist li.completed .checkmark:after {
+  content: "\2713"; /* White tick mark */
+  font-size: 18px;
+  color: white;
+  display: block;
+  text-align: center;
+  line-height: 20px;
+}
+
+.checklist li.completed {
+  text-decoration: line-through; /* Cross out completed items */
+  color: #999; /* Grayed-out color for completed items */
+}
+
+.checklist li.checklist-item {
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.checklist li.checklist-item:hover {
+  background-color: #f0f0f0;
+}
+</style>
 
 <div style="margin-bottom: 80px;">
   <div class="col s6 col-offset-3">
-    <div class="card">
+    <div style="display: flex; align-items: center;">
+      <div>
+        <img src="{% static 'assets/images/hero_img.png' %}" alt="" style="height: 200px; margin-right: 50px;">
+      </div>
       <div class="card-content">
         <span class="card-title">{{ object.name }}</span>
-        <p>Start Date: {{ object.startDate }}</p>
-        <p>End Date: {{ object.endDate }}</p>
-        <p>Invite more travelers</p>
+        <p>{{ object.startDate }} - {{ object.endDate }}</p>
+        
+        <div class="card-action">
+          <a href="{% url 'trips_update' trips.id %}">Edit</a>
+          <a href="{% url 'trips_delete' trips.id %}">Delete</a>
+        </div>
       </div>
-      <div class="card-action">
-        <a href="{% url 'trips_update' trips.id %}">Edit</a>
-        <a href="{% url 'trips_delete' trips.id %}">Delete</a>
-      </div>
+      
     </div>
   </div>
 <div>
-  <a href="{% url 'invite_users' trips.id %}">Travelers Going On This Trip</a>
-  {{trips.accepted_users.all | pprint}}
-
-  {% for user in trip.accepted_users.all%}
-    {{ user.username }}
-  {% endfor %}
+  
+  <div>
+    <h4>You are travelling with</h4>
+    {% if users.exists %}
+      <div style="display: flex; gap: 20px; align-items: center;">
+        {% for user in users %}
+          <p style="background-color: #9cc8e1; border-radius: 10px; padding: 2px 10px;">{{ user.username }}</p>
+          
+        {% endfor %}
+        <a href="{% url 'invite_users' trips.id %}">Invite more friends!</a>
+      </div>
+    {% else %}
+      <p>No accepted users for this trip.</p>
+    {% endif %}
+  </div>
+  
 </div>
   <div class="trip_content" style="display: flex; justify-content: space-between;">
 <div class="destinations_list">
@@ -73,17 +138,18 @@
 
 
   <!-- Destinations not added to trip -->
-  <div>
-    <h4>More Destinations related to your trip</h4>
+  <h4>More Destinations related to your trip</h4>
+  <div style="display: flex; gap: 25px;">
+    
     {% if not_associated_destinations %} 
       {% for destination in not_associated_destinations %}
-      <div>
+      <div >
         <div class="card-content">
           {% with first_photo=destination.photos_set.first %} 
               {% if first_photo%}
             <img class="responsive-img" src="{{ first_photo.url }}" style="height: 200px; width: 200px;" />
               {% else %}
-            <div class="card-panel teal-text center-align">
+            <div class=" teal-text center-align">
               <img src="assets/images/hero_img.png" alt="">
             </div>
               {% endif %} 
@@ -109,53 +175,77 @@
 </div>
 
 <!-- Checklist -->
+
 <div class="todo_checklist">
-  <form action="{% url 'add_checklist' trip_id=trips.id %}" method="POST">
+  <h3>Todo List</h3>
+  <form action="{% url 'add_checklist' trip_id=object.pk %}" method="POST">
     {% csrf_token %}
     <!-- Render the inputs -->
     {{ checklist_form.as_p }}
-    <input type="submit" class="btn" value="Checklist">
+    <input type="submit" class="btn" value="Add Todo">
   </form>
-  <ul>
+  <ul class="checklist">
     {% for checklist in checklists %}
-        <li>{{ checklist.todos }}: {% if checklist.complete %}Done{% else %}<a href="{% url 'mark_complete' checklist.id %}">Mark as complete</a>{% endif %}</li>
-
+      <li class="checklist-item{% if checklist.complete %} completed{% endif %}" data-complete="{{ checklist.complete }}">
+        <span class="checkmark"></span>
+        {{ checklist.todos }}
+      </li>
     {% endfor %}
   </ul>
 </div>
+
 </div>
-  <div class = 'card'>
-    <div class = 'card-content'>
-      <span class = 'card-title'>Places To Visit</span>
+
+  <div>
+    <div>
+      <h3>Places To Visit</h3>
       {% for destination_name, nearby_places in nearby_places_by_destination.items %}
         <h5>Nearby Places for {{ destination_name }}:</h5>
-        <ul>
-          {% for place in nearby_places %}
+        <div style="display: flex; flex-wrap: wrap;">
+          {% for place in nearby_places|slice:":5" %}
             {% if place.opening_hours.open_now %}
-            <div class="card-panel teal-text center-align">
+            <div class=" teal-text center-align">
               {% if place.photos %}
-              <img src="https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference={{ place.photos.0.photo_reference }}&key=AIzaSyCgRAHdFcRKhO-Qszsqpt_fOq4Q7wUMK8Y" alt="{{ place.name }}">
+              <img src="https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference={{ place.photos.0.photo_reference }}&key=AIzaSyCgRAHdFcRKhO-Qszsqpt_fOq4Q7wUMK8Y" alt="{{ place.name }}" style="height: 200px;">
               {% endif %}
-              <li>{{ place.name }}: {{ place.vicinity }} </li>
-              <li>Rating: {{place.rating|default:"0"}}/5 </li>
-              <li>Reviewers: {{place.user_ratings_total|default:"0"}}</li>
-              <li>(Open Now)</li>
+              <p>{{ place.name }}</p>
+                <p>{{ place.vicinity }} </p>
+              <p>Rating: {{place.rating|default:"0"}}/5 </p>
+              <p>Reviewers: {{place.user_ratings_total|default:"0"}}</p>
+              <p>(Open Now)</p>
             </div>
             {% else %}
-            <div class="card-panel red-text center-align">
+            <div class="red-text center-align">
               {% if place.photos %}
-              <img src="https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference={{ place.photos.0.photo_reference }}&key=AIzaSyCgRAHdFcRKhO-Qszsqpt_fOq4Q7wUMK8Y" alt="{{ place.name }}">
+              <img src="https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference={{ place.photos.0.photo_reference }}&key=AIzaSyCgRAHdFcRKhO-Qszsqpt_fOq4Q7wUMK8Y" alt="{{ place.name }}" style="height: 200px; width: 200px;">
               {% endif %}
-              <li>{{ place.name }}: {{ place.vicinity }} </li>
-              <li>Rating: {{place.rating|default:"0"}}/5 </li>
-              <li>Reviewers: {{place.user_ratings_total|default:"0"}}</li>
-              <li>(Closed Now)</li>
+              <p>{{ place.name }}</p>
+                <p>{{ place.vicinity }}</p> 
+              <p>Rating: {{place.rating|default:"0"}}/5 </p>
+              <p>Reviewers: {{place.user_ratings_total|default:"0"}}</p>
+              <p>(Closed Now)</p>
             </div>
             {% endif %}
           {% endfor %}
-        </ul>
+        </div>
       {% endfor %}
     </div>
 </div>
+
+<script>
+  // Get all checklist items
+const checklistItems = document.querySelectorAll('.checklist-item');
+
+// Add click event listener to each checklist item
+checklistItems.forEach(item => {
+  item.addEventListener('click', () => {
+    const isComplete = item.getAttribute('data-complete') === 'true';
+    
+    // Toggle completion status
+    item.setAttribute('data-complete', (!isComplete).toString());
+    item.classList.toggle('completed', !isComplete);
+  });
+});
+</script>
 
 {% endblock %}
