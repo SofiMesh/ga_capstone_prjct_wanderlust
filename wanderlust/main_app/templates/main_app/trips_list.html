@@ -64,34 +64,7 @@
       {{ trip.days_until }} days until start
     </div>
 
-    <script>
-      let scrollInterval;
-      let isMouseOver = false;
-
-      function startScroll(container) {
-        if (!isMouseOver) {
-          isMouseOver = true;
-          scrollInterval = setInterval(function () {
-            if (!isMouseOver) {
-              clearInterval(scrollInterval);
-              return;
-            }
-            const firstImage = container.querySelector("img");
-            const imageWidth = firstImage.offsetWidth;
-            container.style.transform = `translateX(-${imageWidth}px)`;
-            container.appendChild(firstImage.cloneNode(true));
-            container.removeChild(firstImage);
-            container.style.transform = "translateX(0)";
-          }, 2000);
-        }
-      }
-
-      function stopScroll(container) {
-        isMouseOver = false;
-        clearInterval(scrollInterval);
-        container.style.transform = "translateX(0)";
-      }
-    </script>
+   
   </li>
   {% endfor %}
 </ul>
@@ -156,42 +129,11 @@
       {{ trip.days_until }} days until start
     </div>
 
-    <script>
-      let scrollInterval;
-      let isMouseOver = false;
-
-      function startScroll(container) {
-        if (!isMouseOver) {
-          isMouseOver = true;
-          scrollInterval = setInterval(function () {
-            if (!isMouseOver) {
-              clearInterval(scrollInterval);
-              return;
-            }
-            const firstImage = container.querySelector("img");
-            const imageWidth = firstImage.offsetWidth;
-            container.style.transform = `translateX(-${imageWidth}px)`;
-            container.appendChild(firstImage.cloneNode(true));
-            container.removeChild(firstImage);
-            container.style.transform = "translateX(0)";
-          }, 2000);
-        }
-      }
-
-      function stopScroll(container) {
-        isMouseOver = false;
-        clearInterval(scrollInterval);
-        container.style.transform = "translateX(0)";
-      }
-    </script>
+    
   </li>
   {% endif %}
 {% endfor %}
 </ul>
-
-  
-
-
 
 <h1>Past Trips</h1>
 
