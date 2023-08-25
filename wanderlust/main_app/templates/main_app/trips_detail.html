@@ -204,7 +204,7 @@
         <div style="display: flex; flex-wrap: wrap;">
           {% for place in nearby_places|slice:":5" %}
             {% if place.opening_hours.open_now %}
-            <div class=" teal-text center-align">
+            <div class=" teal-text center-align" style="margin-right: 30px;">
               {% if place.photos %}
               <img src="https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference={{ place.photos.0.photo_reference }}&key=AIzaSyCgRAHdFcRKhO-Qszsqpt_fOq4Q7wUMK8Y" alt="{{ place.name }}" style="height: 200px;">
               {% endif %}
@@ -215,7 +215,7 @@
               <p>(Open Now)</p>
             </div>
             {% else %}
-            <div class="red-text center-align">
+            <div class="red-text center-align" style="margin-right: 30px;">
               {% if place.photos %}
               <img src="https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference={{ place.photos.0.photo_reference }}&key=AIzaSyCgRAHdFcRKhO-Qszsqpt_fOq4Q7wUMK8Y" alt="{{ place.name }}" style="height: 200px; width: 200px;">
               {% endif %}

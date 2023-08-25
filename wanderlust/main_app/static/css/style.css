@@ -33,12 +33,12 @@ flex-direction: column;
     
   }
   
-  footer.page-footer {
+  footer .page-footer {
     padding-top: 1;
     text-align: right;
     position: relative;
     background-color:lightgrey;
-    font-size: 30px;
+    font-size: 20px;
   }
 
   
@@ -49,12 +49,12 @@ flex-direction: column;
     align-items: center;
     justify-content: space-between;
     margin-top: 0px; 
-    background-color: antiquewhite;
+    background-color: #9cc8e1;
   }
 
   .signup-form {
     margin-left: 20px; 
-    background-color: antiquewhite;
+    background-color: #9cc8e1;
   }
 
   .login-form{
@@ -67,6 +67,6 @@ flex-direction: column;
     align-items: center;
     justify-content: space-between;
     margin-top: 90px; 
-    background-color: antiquewhite;
+   
   }
 

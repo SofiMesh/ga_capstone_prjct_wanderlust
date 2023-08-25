@@ -1,6 +1,12 @@
 {% extends 'base.html' %} {% load static %} {% block content %}
+
+<button style="background-color: #9cc8e1; border: none; margin-top: 50px; padding: 10px 20px; border-radius: 20px; font-weight: bolder;">
+  <a href="{% url 'destinations_create' %}">Add a Destination</a>
+</button>
+
+<div style="margin-bottom: 30px;">
 <h1>Places to go</h1>
-<div class="container mt-5">
+<div >
   {% if object_list %}
   <div class="row">
     {% for destination in object_list %}
@@ -11,7 +17,7 @@
             {% if first_photo%}
           <img class="responsive-img" src="{{ first_photo.url }}" style="height: 200px; width: auto;" />
             {% else %}
-          <div class="card-panel teal-text center-align">
+          <div class="teal-text center-align">
             No Photos
           </div>
             {% endif %} 
@@ -32,5 +38,6 @@
     <a href="{% url 'destinations_create' %}">Create your first destination!</a>
   </p>
   {% endif %}
+</div>
 </div>
 {% endblock %}

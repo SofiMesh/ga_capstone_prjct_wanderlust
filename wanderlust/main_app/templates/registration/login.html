@@ -1,23 +1,18 @@
-{% extends 'base.html' %}
-{% load static %}
-{% block content %}
-<div class="login">
-    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
-    <div class="login-container">
-      <img src="{% static 'assets/images/hero_img.png' %}" alt="Hero Image">
-      <div class="login-form">
-<h1>Log In</h1>
+{% extends 'base.html' %} {% load static %} {% block content %}
 
-<form method="POST" action="{% url 'login' %}">
-	<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
-	<div class="card">
-        <div class="card-content">
-	{% csrf_token %}
-	{{ form.as_p }}
-	
-	<input type="hidden" name="next" value="{{ next }}">
-	<button type="submit" class="btn">Log In</button>
-  </form>
-</div>
+<div style="display: flex; align-items: center; justify-content: space-between;">
+  <img src="{% static 'assets/images/hero_img.png' %}" alt="Hero Image" />
+  <div>
+    <h1>Log In</h1>
+    <div class="card">
+      <div class="card-content">
+        <form method="POST" action="{% url 'login' %}">
+          {% csrf_token %} {{ form.as_p }}
+          <input type="hidden" name="next" value="{{ next }}" />
+          <button type="submit" class="btn">Log In</button>
+        </form>
+      </div>
+    </div>
+  </div>
 </div>
 {% endblock %}
