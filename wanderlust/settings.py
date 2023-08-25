@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import environ
+import dj_database_url
+import os 
 
 # Load operating system environment variables and then prepare to use them
 environ.Env()
@@ -19,6 +21,30 @@ environ.Env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+
+# this sets all our environment variables to there required
+# values in production if an enivronment variable 
+# is absent, so False, True, True respectively
+env = environ.Env(
+    # set casting, default value
+    DEBUG=(bool, False),
+    CSRF_COOKIE_SECURE=(bool, True),
+    SESSION_COOKIE_SECURE=(bool, True),   
+)
+# Quick-start development settings - unsuitable for production
+# See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
+
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = os.environ['DJANGO_SECRET_KEY'] 
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = env('DEBUG')
+CSRF_COOKIE_SECURE = env('CSRF_COOKIE_SECURE')
+SESSION_COOKIE_SECURE = env('SESSION_COOKIE_SECURE')
+
+ALLOWED_HOSTS = ['ancient-voice-480.fly.dev', 'localhost']
+CSRF_TRUSTED_ORIGINS = ['https://ancient-voice-480.fly.dev/']
 
 
 # Quick-start development settings - unsuitable for production
@@ -29,8 +55,6 @@ SECRET_KEY = 'django-insecure-m4=axowjar4mbqn57&4p^m8_+_hhd*&)08o@b=iibf_7#&hig7
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
-ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -80,11 +104,11 @@ WSGI_APPLICATION = 'wanderlust.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'wanderlust',
-    }
+    "default": dj_database_url.config(
+        default="sqlite:///" + os.path.join(BASE_DIR, "db.sqlite3")
+    )
 }
+
 
 
 # Password validation
@@ -121,7 +145,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = "static/"
+STATIC_ROOT = "static"
 
 # Successful Login Redirect
 LOGIN_REDIRECT_URL = '/trips/'
@@ -132,3 +157,4 @@ LOGOUT_REDIRECT_URL = '/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
