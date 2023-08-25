@@ -2,12 +2,12 @@
 {% load static %}
 {% block content %}
 
-<h1>Plan a Trip</h1>
+<h1>{% if update %}Edit{% else %}Plan{% endif %} a Trip</h1>
 <div class="trips-form">
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
     <div class="card">
         <div class="card-content">
-            <form action= "{% url 'trips_create' %}" method="POST">
+            <form action="{% if update %}{% url 'trips_update' object.id %}{% else %}{% url 'trips_create' %}{% endif %}" method="POST">
                 {% csrf_token %}
                 {{ form.as_table }}
                 <input type="submit" value="Submit!" class="btn">
