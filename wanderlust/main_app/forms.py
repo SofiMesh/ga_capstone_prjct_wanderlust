@@ -4,10 +4,14 @@ from django.contrib.auth.forms import UserCreationForm
 from .models import Checklist, Activities, User, Trips, Destinations, Travelers
 from django.contrib.auth.models import User
 
-class ChecklistForm(ModelForm):
-  class Meta:
-    model = Checklist
-    fields = ['todos', 'complete']
+class ChecklistForm(forms.ModelForm):
+    class Meta:
+        model = Checklist
+        fields = ['todos', 'complete']
+        labels = {
+            'todos': '',  # Set the label to an empty string
+            'complete': '',  # Set the label to an empty string
+        }
 
 class ActivityForm(ModelForm):
     class Meta:
