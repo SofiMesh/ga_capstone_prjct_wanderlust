@@ -44,7 +44,7 @@ CSRF_COOKIE_SECURE = env('CSRF_COOKIE_SECURE')
 SESSION_COOKIE_SECURE = env('SESSION_COOKIE_SECURE')
 
 ALLOWED_HOSTS = ['ancient-voice-480.fly.dev', 'localhost']
-CSRF_TRUSTED_ORIGINS = ['https://ancient-voice-480.fly.dev/']
+CSRF_TRUSTED_ORIGINS = ['https://ancient-voice-480.fly.dev']
 
 
 # Quick-start development settings - unsuitable for production
