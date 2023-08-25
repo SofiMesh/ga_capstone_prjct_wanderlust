@@ -128,10 +128,20 @@ class TripCreate(LoginRequiredMixin, CreateView):
         form.instance.user = self.request.user
         # Let the CreateView do its job as usual
         return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['update'] = False
+        return context
     
 class TripUpdate(LoginRequiredMixin, UpdateView): 
     model = Trips
     fields = ['name', 'startDate', 'endDate', 'budget']
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['update'] = True
+        return context
 
 class TripDelete(LoginRequiredMixin, DeleteView): 
     model = Trips
