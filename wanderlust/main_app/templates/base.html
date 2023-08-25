@@ -14,6 +14,7 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
     />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link
       rel="stylesheet"
       type="text/css"
@@ -25,15 +26,19 @@
   <body>
     <header class="navbar-fixed">
       <nav>
-        <div class="nav-wrapper" style="background-color: #9cc8e1;">
-          <ul>
-            <li>
+        <div style="background-color: #9cc8e1; display: flex; justify-content: space-between; align-items: center;">
+
+         
+          
+          
+            <div>
+              <img src="{% static 'assets/images/hero_img.png' %}" alt="Hero Image" style="height: 50px; width: 50px; margin-left: 20px;">
               <a href="{% url 'home' %}" class="left brand-logo"
                 >&nbsp;&nbsp;Wanderlust</a
               >
-            </li>
-          </ul>
-          <ul class="right">
+            </div>
+          <div>
+          <ul>
             <!-- changes below -->
             <li><a href="{% url 'about' %}">About</a></li>
             {% if user.is_authenticated %}
@@ -43,12 +48,14 @@
             </li>
             
             <li><a href="{% url 'trips_index' %}">Trips</a></li>
+            <li><a href=""><i class="fa-solid fa-bell"></i></a></li>
             <li><a href="{% url 'logout' %}">Log Out</a></li>
             {% else %}
             <li><a href="{% url 'signup' %}">Sign Up</a></li>
             <li><a href="{% url 'login' %}">Log In</a></li>
             {% endif %}
           </ul>
+        </div>
         </div>
       </nav>
     </header>
