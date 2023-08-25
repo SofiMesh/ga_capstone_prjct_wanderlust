@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "wanderlust"
+version = "0.1.0"
+description = ""
+authors = ["anjoo91 <andrew.w.lew@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+django = "^4.2.4"
+dj-database-url = "^2.1.0"
+daphne = "^4.0.0"
+psycopg2-binary = "^2.9.7"
+boto3 = "^1.28.34"
+django-environ = "^0.10.0"
+requests = "^2.31.0"
+googlemaps = "^4.10.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
