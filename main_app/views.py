@@ -49,7 +49,23 @@ class TripIndex(LoginRequiredMixin, ListView):
         upcoming_trips = []
         past_trips = []
 
-        for trip in all_trips:
+
+ # Get trips created by the user
+        user_created_trips = Trips.objects.filter(user=self.request.user)
+        
+        # Get trips accepted by the user
+        accepted_trips = Trips.objects.filter(accepted_users=self.request.user)
+        
+        # Combine the user's created trips and accepted trips
+        user_related_trips = user_created_trips | accepted_trips
+
+        # Get pending invitations for the logged-in user as the receiver
+        pending_invitations = TripRequest.objects.filter(receiver=self.request.user, status='pending')
+
+
+
+
+        for trip in user_related_trips:
             days_until = (trip.startDate - current_date).days
             trip.days_until = days_until
 
@@ -58,11 +74,15 @@ class TripIndex(LoginRequiredMixin, ListView):
             else:
                 past_trips.append(trip)
 
+        # sort trips by start date (asc for upcoming, desc for past)
+        upcoming_trips = sorted(upcoming_trips, key=lambda x: x.startDate)
+        past_trips = sorted(past_trips, key=lambda x: x.startDate, reverse=True)
+    
         context['upcoming_trips'] = upcoming_trips
         context['past_trips'] = past_trips
+        context['pending_invitations'] = pending_invitations
 
         return context
-    
 
 
 class TripDetail(LoginRequiredMixin, DetailView): 
@@ -332,4 +352,3 @@ def reject_request(request, request_id):
     return redirect('view_requests')
 
 
-    

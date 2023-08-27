@@ -4,6 +4,9 @@ from django.contrib.auth.forms import UserCreationForm
 from .models import Checklist, Activities, User, Trips, Destinations, Travelers
 from django.contrib.auth.models import User
 
+
+
+
 class ChecklistForm(forms.ModelForm):
     class Meta:
         model = Checklist
@@ -34,3 +37,13 @@ class InvitationForm(forms.ModelForm):
         model = Trips # this is the model we're trying to add data to
         fields = ['accepted_users'] # this is the field it's adding to in the Trips model
         widgets = {'accepted_users': forms.CheckboxSelectMultiple}
+
+class TripsForm(forms.ModelForm):
+    startDate = forms.DateField(widget=forms.DateInput(attrs={'class' : 'datepicker'}))
+    endDate = forms.DateField(widget=forms.DateInput(attrs={'class' : 'datepicker'}))
+
+    class Meta:
+        model = Trips
+        fields = ['name', 'startDate', 'endDate', 'budget', 'destination_ids', 'user', 'accepted_users']
+
+        

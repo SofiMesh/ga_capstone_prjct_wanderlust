@@ -3,6 +3,7 @@ from django.urls import reverse
 from datetime import date
 from django.contrib.auth.models import User
 
+
 # Create your models here.
 class Destinations(models.Model):
     name = models.CharField(max_length=250)
@@ -64,3 +65,4 @@ class Activities(models.Model):
 class Photos(models.Model):
     url = models.CharField(max_length=200)
     destination_id = models.ForeignKey(Destinations, on_delete=models.CASCADE)
+
